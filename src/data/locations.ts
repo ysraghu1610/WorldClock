@@ -1,0 +1,70 @@
+import type { ClockLocation } from '../types';
+
+export const defaultLocations: ClockLocation[] = [
+  {
+    id: 'india-new-delhi',
+    country: 'India',
+    city: 'New Delhi',
+    flag: '🇮🇳',
+    timeZone: 'Asia/Kolkata',
+    isDefault: true,
+  },
+  {
+    id: 'usa-new-york',
+    country: 'USA',
+    city: 'New York',
+    flag: '🇺🇸',
+    timeZone: 'America/New_York',
+    isDefault: true,
+  },
+  {
+    id: 'uk-london',
+    country: 'UK',
+    city: 'London',
+    flag: '🇬🇧',
+    timeZone: 'Europe/London',
+    isDefault: true,
+  },
+  {
+    id: 'australia-sydney',
+    country: 'Australia',
+    city: 'Sydney',
+    flag: '🇦🇺',
+    timeZone: 'Australia/Sydney',
+    isDefault: true,
+  },
+  {
+    id: 'china-shanghai',
+    country: 'China',
+    city: 'Shanghai',
+    flag: '🇨🇳',
+    timeZone: 'Asia/Shanghai',
+    isDefault: true,
+  },
+  {
+    id: 'russia-moscow',
+    country: 'Russia',
+    city: 'Moscow',
+    flag: '🇷🇺',
+    timeZone: 'Europe/Moscow',
+    isDefault: true,
+  },
+];
+
+export const availableLocations: ClockLocation[] = [
+  ...defaultLocations,
+  { id: 'india-mumbai', country: 'India', city: 'Mumbai', flag: '🇮🇳', timeZone: 'Asia/Kolkata' },
+  { id: 'usa-los-angeles', country: 'USA', city: 'Los Angeles', flag: '🇺🇸', timeZone: 'America/Los_Angeles' },
+  { id: 'france-paris', country: 'France', city: 'Paris', flag: '🇫🇷', timeZone: 'Europe/Paris' },
+  { id: 'uae-dubai', country: 'UAE', city: 'Dubai', flag: '🇦🇪', timeZone: 'Asia/Dubai' },
+  { id: 'singapore-singapore', country: 'Singapore', city: 'Singapore', flag: '🇸🇬', timeZone: 'Asia/Singapore' },
+  { id: 'japan-tokyo', country: 'Japan', city: 'Tokyo', flag: '🇯🇵', timeZone: 'Asia/Tokyo' },
+  { id: 'australia-melbourne', country: 'Australia', city: 'Melbourne', flag: '🇦🇺', timeZone: 'Australia/Melbourne' },
+  { id: 'hong-kong-hong-kong', country: 'Hong Kong', city: 'Hong Kong', flag: '🇭🇰', timeZone: 'Asia/Hong_Kong' },
+  { id: 'canada-toronto', country: 'Canada', city: 'Toronto', flag: '🇨🇦', timeZone: 'America/Toronto' },
+  { id: 'usa-san-francisco', country: 'USA', city: 'San Francisco', flag: '🇺🇸', timeZone: 'America/Los_Angeles' },
+  { id: 'germany-berlin', country: 'Germany', city: 'Berlin', flag: '🇩🇪', timeZone: 'Europe/Berlin' },
+  { id: 'south-korea-seoul', country: 'South Korea', city: 'Seoul', flag: '🇰🇷', timeZone: 'Asia/Seoul' },
+  { id: 'thailand-bangkok', country: 'Thailand', city: 'Bangkok', flag: '🇹🇭', timeZone: 'Asia/Bangkok' },
+  { id: 'netherlands-amsterdam', country: 'Netherlands', city: 'Amsterdam', flag: '🇳🇱', timeZone: 'Europe/Amsterdam' },
+];
