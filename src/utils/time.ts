@@ -157,7 +157,7 @@ export const getDifferenceFromBase = (date: Date, timeZone: string, baseTimeZone
   const minutes = absMinutes % 60;
   const hourText = hours > 0 ? `${hours}h` : '';
   const minuteText = minutes > 0 ? `${minutes}m` : '';
-  const direction = diffMinutes > 0 ? 'ahead of India' : 'behind India';
+  const direction = diffMinutes > 0 ? 'ahead of GMT' : 'behind GMT';
 
   return `${[hourText, minuteText].filter(Boolean).join(' ')} ${direction}`;
 };

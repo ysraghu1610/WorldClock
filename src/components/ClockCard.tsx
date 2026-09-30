@@ -11,7 +11,7 @@ type ClockCardProps = {
   onRemove?: (id: string) => void;
 };
 
-const baseTimeZone = 'Asia/Kolkata';
+const baseTimeZone = 'UTC';
 
 export function ClockCard({
   location,
