@@ -67,4 +67,13 @@ export const availableLocations: ClockLocation[] = [
   { id: 'south-korea-seoul', country: 'South Korea', city: 'Seoul', flag: '🇰🇷', timeZone: 'Asia/Seoul' },
   { id: 'thailand-bangkok', country: 'Thailand', city: 'Bangkok', flag: '🇹🇭', timeZone: 'Asia/Bangkok' },
   { id: 'netherlands-amsterdam', country: 'Netherlands', city: 'Amsterdam', flag: '🇳🇱', timeZone: 'Europe/Amsterdam' },
+  { id: 'israel-jerusalem', country: 'Israel', city: 'Jerusalem', flag: '🇮🇱', timeZone: 'Asia/Jerusalem' },
+{ id: 'pakistan-karachi', country: 'Pakistan', city: 'Karachi', flag: '🇵🇰', timeZone: 'Asia/Karachi' },
+{ id: 'malaysia-kuala-lumpur', country: 'Malaysia', city: 'Kuala Lumpur', flag: '🇲🇾', timeZone: 'Asia/Kuala_Lumpur' },
+{ id: 'indonesia-jakarta', country: 'Indonesia', city: 'Jakarta', flag: '🇮🇩', timeZone: 'Asia/Jakarta' },
+{ id: 'mexico-mexico-city', country: 'Mexico', city: 'Mexico City', flag: '🇲🇽', timeZone: 'America/Mexico_City' },
+{ id: 'greenland-nuuk', country: 'Greenland', city: 'Nuuk', flag: '🇬🇱', timeZone: 'America/Nuuk' },
+{ id: 'iceland-reykjavik', country: 'Iceland', city: 'Reykjavik', flag: '🇮🇸', timeZone: 'Atlantic/Reykjavik' },
+{ id: 'argentina-buenos-aires', country: 'Argentina', city: 'Buenos Aires', flag: '🇦🇷', timeZone: 'America/Argentina/Buenos_Aires' },
+{ id: 'brazil-sao-paulo', country: 'Brazil', city: 'Sao Paulo', flag: '🇧🇷', timeZone: 'America/Sao_Paulo' },
 ];

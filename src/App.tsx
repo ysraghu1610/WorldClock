@@ -1,19 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
-import { CitySearch } from './components/CitySearch';
-import { Footer } from './components/Footer';
-import { Header } from './components/Header';
-import { WorldClockGrid } from './components/WorldClockGrid';
-import { availableLocations, defaultLocations } from './data/locations';
-import { useLocalStorage } from './hooks/useLocalStorage';
-import type { ClockLocation } from './types';
+import { useEffect, useMemo, useState } from "react";
+import { CitySearch } from "./components/CitySearch";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
+import { WorldClockGrid } from "./components/WorldClockGrid";
+import { availableLocations, defaultLocations } from "./data/locations";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import type { ClockLocation } from "./types";
 
-const addedStorageKey = 'world-clock-added-locations';
-const favoriteStorageKey = 'world-clock-favorites';
+const addedStorageKey = "world-clock-added-locations";
+const favoriteStorageKey = "world-clock-favorites";
 
 function App() {
   const [now, setNow] = useState(() => new Date());
-  const [addedIds, setAddedIds] = useLocalStorage<string[]>(addedStorageKey, []);
-  const [favoriteIds, setFavoriteIds] = useLocalStorage<string[]>(favoriteStorageKey, []);
+  const [addedIds, setAddedIds] = useLocalStorage<string[]>(
+    addedStorageKey,
+    [],
+  );
+  const [favoriteIds, setFavoriteIds] = useLocalStorage<string[]>(
+    favoriteStorageKey,
+    [],
+  );
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -31,22 +37,42 @@ function App() {
     [addedIds],
   );
 
-  const locations = useMemo(() => [...defaultLocations, ...addedLocations], [addedLocations]);
-  const selectedIds = useMemo(() => locations.map((location) => location.id), [locations]);
+  const locations = useMemo(() => {
+    const orderedLocations = [...addedLocations, ...defaultLocations];
+
+    return orderedLocations.filter(
+      (location, index) =>
+        orderedLocations.findIndex(
+          (candidate) => candidate.id === location.id,
+        ) === index,
+    );
+  }, [addedLocations]);
+  const selectedIds = useMemo(
+    () => locations.map((location) => location.id),
+    [locations],
+  );
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const timeZoneCount = new Set(locations.map((location) => location.timeZone)).size;
+  const timeZoneCount = new Set(locations.map((location) => location.timeZone))
+    .size;
 
   const addLocation = (location: ClockLocation) => {
-    setAddedIds((currentIds) => (currentIds.includes(location.id) ? currentIds : [...currentIds, location.id]));
+    setAddedIds((currentIds) => [
+      location.id,
+      ...currentIds.filter((id) => id !== location.id),
+    ]);
   };
 
   const removeLocation = (id: string) => {
-    setAddedIds((currentIds) => currentIds.filter((locationId) => locationId !== id));
+    setAddedIds((currentIds) =>
+      currentIds.filter((locationId) => locationId !== id),
+    );
   };
 
   const toggleFavorite = (id: string) => {
     setFavoriteIds((currentIds) =>
-      currentIds.includes(id) ? currentIds.filter((locationId) => locationId !== id) : [...currentIds, id],
+      currentIds.includes(id)
+        ? currentIds.filter((locationId) => locationId !== id)
+        : [...currentIds, id],
     );
   };
 
@@ -63,7 +89,11 @@ function App() {
     <div className="app-shell">
       <div className="ambient ambient--one" />
       <div className="ambient ambient--two" />
-      <Header now={now} locationCount={locations.length} timeZoneCount={timeZoneCount} />
+      <Header
+        now={now}
+        locationCount={locations.length}
+        timeZoneCount={timeZoneCount}
+      />
       <CitySearch selectedIds={selectedIds} onAddLocation={addLocation} />
       <WorldClockGrid
         locations={sortedLocations}
