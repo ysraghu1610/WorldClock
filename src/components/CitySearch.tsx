@@ -17,7 +17,7 @@ export function CitySearch({ selectedIds, onAddLocation }: CitySearchProps) {
     return availableLocations
       .filter((location) => {
         const searchable = `${location.city} ${location.country} ${location.timeZone}`.toLowerCase();
-        return searchable.includes(normalizedQuery) && !selectedIds.includes(location.id);
+        return searchable.includes(normalizedQuery);
       })
       .slice(0, 6);
   }, [query, selectedIds]);
@@ -42,16 +42,26 @@ export function CitySearch({ selectedIds, onAddLocation }: CitySearchProps) {
       {query.trim() && (
         <div className="search-results">
           {matches.length > 0 ? (
-            matches.map((location) => (
-              <button key={location.id} type="button" onClick={() => addLocation(location)}>
-                <span>{location.flag}</span>
-                <span>
-                  <strong>{location.city}</strong>
-                  <small>{location.country}</small>
-                </span>
-                <em>{location.timeZone.replace('_', ' ')}</em>
-              </button>
-            ))
+            matches.map((location) => {
+              const isAdded = selectedIds.includes(location.id);
+
+              return (
+                <button
+                  key={location.id}
+                  className={isAdded ? 'search-result--added' : ''}
+                  type="button"
+                  disabled={isAdded}
+                  onClick={() => addLocation(location)}
+                >
+                  <span>{location.flag}</span>
+                  <span>
+                    <strong>{location.city}</strong>
+                    <small>{location.country}</small>
+                  </span>
+                  {isAdded ? <em className="search-result__status">Already added</em> : <em>{location.timeZone.replace('_', ' ')}</em>}
+                </button>
+              );
+            })
           ) : (
             <p>No available matches.</p>
           )}

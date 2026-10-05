@@ -4,6 +4,7 @@ const timeFormatterCache = new Map<string, Intl.DateTimeFormat>();
 const partsFormatterCache = new Map<string, Intl.DateTimeFormat>();
 const dateFormatterCache = new Map<string, Intl.DateTimeFormat>();
 const offsetFormatterCache = new Map<string, Intl.DateTimeFormat>();
+const conversionFormatterCache = new Map<string, Intl.DateTimeFormat>();
 const timeZoneAliases: Record<string, string> = {
   'Asia/Calcutta': 'Asia/Kolkata',
 };
@@ -66,6 +67,23 @@ const getOffsetFormatter = (timeZone: string) => {
     timeZoneName: 'longOffset',
   });
   offsetFormatterCache.set(timeZone, formatter);
+  return formatter;
+};
+
+const getConversionFormatter = (timeZone: string) => {
+  const cached = conversionFormatterCache.get(timeZone);
+  if (cached) return cached;
+
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  });
+  conversionFormatterCache.set(timeZone, formatter);
   return formatter;
 };
 
@@ -160,6 +178,57 @@ export const getDifferenceFromBase = (date: Date, timeZone: string, baseTimeZone
   const direction = diffMinutes > 0 ? 'ahead of GMT' : 'behind GMT';
 
   return `${[hourText, minuteText].filter(Boolean).join(' ')} ${direction}`;
+};
+
+const getInputPart = (parts: Intl.DateTimeFormatPart[], type: Intl.DateTimeFormatPartTypes) =>
+  Number(partValue(parts, type));
+
+export const getInputDateTimeForTimeZone = (date: Date, timeZone: string) => {
+  const parts = getConversionFormatter(timeZone).formatToParts(date);
+  const year = getInputPart(parts, 'year');
+  const month = getInputPart(parts, 'month');
+  const day = getInputPart(parts, 'day');
+  const hour = getInputPart(parts, 'hour');
+  const minute = getInputPart(parts, 'minute');
+
+  return {
+    dateValue: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+    timeValue: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
+  };
+};
+
+export const zonedDateTimeToDate = (dateValue: string, timeValue: string, timeZone: string) => {
+  const match = `${dateValue}T${timeValue}`.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
+  );
+  if (!match) return null;
+
+  const [, yearText, monthText, dayText, hourText, minuteText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  const targetTimestamp = Date.UTC(year, month - 1, day, hour, minute);
+  let candidate = new Date(targetTimestamp);
+
+  // Resolve a wall-clock value in the chosen IANA zone to one exact instant.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const parts = getConversionFormatter(timeZone).formatToParts(candidate);
+    const observedTimestamp = Date.UTC(
+      getInputPart(parts, 'year'),
+      getInputPart(parts, 'month') - 1,
+      getInputPart(parts, 'day'),
+      getInputPart(parts, 'hour'),
+      getInputPart(parts, 'minute'),
+    );
+    const adjustment = targetTimestamp - observedTimestamp;
+    if (adjustment === 0) break;
+    candidate = new Date(candidate.getTime() + adjustment);
+  }
+
+  const resolved = getInputDateTimeForTimeZone(candidate, timeZone);
+  return resolved.dateValue === dateValue && resolved.timeValue === timeValue ? candidate : null;
 };
 
 export const normalizeTimeZone = (timeZone: string) => timeZoneAliases[timeZone] ?? timeZone;

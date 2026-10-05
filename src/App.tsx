@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CitySearch } from "./components/CitySearch";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
+import { TimezoneConverter } from "./components/TimezoneConverter";
 import { WorldClockGrid } from "./components/WorldClockGrid";
 import { availableLocations, defaultLocations } from "./data/locations";
 import { useLocalStorage } from "./hooks/useLocalStorage";
@@ -9,6 +10,8 @@ import type { ClockLocation } from "./types";
 
 const addedStorageKey = "world-clock-added-locations";
 const favoriteStorageKey = "world-clock-favorites";
+const maxClockLocations = 10;
+const maxAddedLocations = maxClockLocations - defaultLocations.length;
 
 function App() {
   const [now, setNow] = useState(() => new Date());
@@ -29,9 +32,18 @@ function App() {
     return () => window.clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    setAddedIds((currentIds) =>
+      currentIds.length > maxAddedLocations
+        ? currentIds.slice(0, maxAddedLocations)
+        : currentIds,
+    );
+  }, [setAddedIds]);
+
   const addedLocations = useMemo(
     () =>
       addedIds
+        .slice(0, maxAddedLocations)
         .map((id) => availableLocations.find((location) => location.id === id))
         .filter((location): location is ClockLocation => Boolean(location)),
     [addedIds],
@@ -59,7 +71,7 @@ function App() {
     setAddedIds((currentIds) => [
       location.id,
       ...currentIds.filter((id) => id !== location.id),
-    ]);
+    ].slice(0, maxAddedLocations));
   };
 
   const removeLocation = (id: string) => {
@@ -95,6 +107,7 @@ function App() {
         timeZoneCount={timeZoneCount}
       />
       <CitySearch selectedIds={selectedIds} onAddLocation={addLocation} />
+      <TimezoneConverter locations={locations} now={now} />
       <WorldClockGrid
         locations={sortedLocations}
         now={now}
